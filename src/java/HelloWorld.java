@@ -1,6 +1,23 @@
+import 
+
 public class HelloWorld {
 
+    public void test1(){
+        System.out.println("test1");
+    }
+    
+    public void runTests{
+         Result result = JUnitCore.runClasses(TestJunit.class);
+      for (Failure failure : result.getFailures()) {
+         System.out.println(failure.toString());
+      }
+      System.out.println(result.wasSuccessful());
+    }
+
     public static void main(String[] args) {
+        
+        runTests();
+        
         // Prints "Hello, World" to the terminal window.
         System.out.println("Zealots Team");
         
@@ -16,8 +33,11 @@ public class HelloWorld {
             //printTreeLowMemory(treeNode);
             printTree(treeNode);
             Sytem.out.print(" Tree Height: " + findTreeHeight(treeNode));
+            
         }
         
+        // dori - test - do you see
+        //I am see - Alex
         
     }
     
