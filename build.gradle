@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+jar {
+    baseName    = 'ghc.jar'
+    version     = 'beta'    
+}
