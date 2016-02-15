@@ -1,4 +1,3 @@
-package com.company;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,7 +15,7 @@ public class DeliveryMain {
 	public static int numOfWarehouses;
 	public static int numOfOrders;
 	
-	public static ProductType[] productTypes;
+	public static Integer[] productWeights;
 	
 	public static HashMap<Cell, Warehouse> warehouses;
 
@@ -36,8 +35,8 @@ public class DeliveryMain {
 		System.out.println("numOfTurns = " + numOfTurns);
 		System.out.println("maxPayload = " + maxPayload);
 		System.out.println("numOfProductTypes = " + numOfProductTypes);
-		for (int i = 0; i < productTypes.length; i++) {
-			System.out.println("productType[" + i + "] weight: " + productTypes[i].getWeight());
+		for (int i = 0; i < productWeights.length; i++) {
+			System.out.println("productWeights[" + i + "] weight: " + productWeights[i]);
 		}
 		System.out.println("numOfWarehouses = " + numOfWarehouses);
 		for (int i = 0; i < numOfWarehouses; i++) {
@@ -76,12 +75,12 @@ public class DeliveryMain {
 	    	}
 	    	
 	    	if (lineNo == 2) {
-	    		handleProductTypes(line);
+				handleProductWeights(line);
 	    	}
 	    	
 	    	if (lineNo == 3) {
 	    		numOfWarehouses = Integer.valueOf(line);
-	    		warehouses = new HashMap<>();
+	    		warehouses = new HashMap<Cell, Warehouse>();
 	    		lineOfOrders = 4 + 2 * numOfWarehouses;	   
 	    		
 	    	}
@@ -91,15 +90,14 @@ public class DeliveryMain {
 	    			String location[] = line.split(" ");
 					int r = Integer.valueOf(location[0]);
 					int c = Integer.valueOf(location[1]);
-					warehouses.put(wareHouseNo, new Warehouse());
-					warehouses.get(wareHouseNo).setCell(new Cell(r, c));
+					warehouses.put(new Cell(r, c), new Warehouse(new Cell(r,c)));
 	    		} else {
-	    			HashMap<Integer, Integer> warehouseProductTypes = new HashMap<Integer, Integer>(); 
+	    			HashMap<Integer, Integer> warehouseProductTypes = new HashMap<Integer, Integer>();
 	    			String[] warehouseProductTypesStr = line.split(" ");
 	    			for (int j = 0; j < numOfProductTypes; j++) {
 	    				warehouseProductTypes.put(j, Integer.valueOf(warehouseProductTypesStr[j]));
 	    			}
-					warehouses.get(wareHouseNo).setNumPerProductType(warehouseProductTypes);
+					warehouses.get(wareHouseNo).setProducts(warehouseProductTypes);
 	    			wareHouseNo ++;
 	    				    			
 	    		}
@@ -136,16 +134,11 @@ public class DeliveryMain {
 	    }
 	}
 
-
-
-	private static void handleProductTypes(String line) {
-		productTypes = new ProductType[numOfProductTypes];
+	private static void handleProductWeights(String line) {
+		productWeights = new Integer[numOfProductTypes];
 		String[] ptw = line.split(" ");
 		for (int i = 0; i < ptw.length; i++) {
-			productTypes[i] = new ProductType();
-			productTypes[i].setWeight(Integer.valueOf(ptw[i]));
-		}		
+			productWeights[i] = Integer.valueOf(ptw[i]);
+		}
 	}
-	
-	
 }

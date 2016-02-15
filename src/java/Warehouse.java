@@ -1,18 +1,26 @@
-package com.company;
-
 import java.util.HashMap;
 
 public class Warehouse {
 
     private Cell location;
-    private HashMap<ProductType, Integer> products = new HashMap<>();
+    /** product type to quantity */
+    private HashMap<Integer, Integer> productsMap = new HashMap<Integer, Integer>();
 
-    public HashMap<ProductType, Integer> getProducts() {
-		return products;
+    public Warehouse(Cell location, HashMap<Integer, Integer> productsMap) {
+        this.location = location;
+        this.productsMap = productsMap;
+    }
+
+    public Warehouse(Cell cell) {
+        location = cell;
+    }
+
+    public HashMap<Integer, Integer> getProductsMap() {
+		return productsMap;
 	}
 
-    public void setProducts(HashMap<ProductType, Integer> products) {
-		this.products = products;
+    public void setProducts(HashMap<Integer, Integer> products) {
+		this.productsMap = productsMap;
 	}
 
     public Cell getLocation() {
@@ -22,5 +30,4 @@ public class Warehouse {
     public void setLocation(Cell location) {
         this.location = location;
     }
-
 }

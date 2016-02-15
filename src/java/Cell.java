@@ -1,10 +1,8 @@
-package com.company;
-
 public final class Cell {
 	private final int row;
 	private final int column;
 
-	private Cell(int row, int column) {
+	public Cell(int row, int column) {
 		this.row = row;
 		this.column = column;
 	}
