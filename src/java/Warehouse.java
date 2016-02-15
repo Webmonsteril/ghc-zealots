@@ -1,23 +1,26 @@
-package Delivery;
+package com.company;
 
 import java.util.HashMap;
 
 public class Warehouse {
 
-	private Cell cell;
-	private HashMap<Integer, Integer> numPerProductType;
+    private Cell location;
+    private HashMap<ProductType, Integer> products = new HashMap<>();
 
-	public Cell getCell() {
-		return cell;
+    public HashMap<ProductType, Integer> getProducts() {
+		return products;
 	}
-	public void setCell(Cell cell) {
-		this.cell = cell;
+
+    public void setProducts(HashMap<ProductType, Integer> products) {
+		this.products = products;
 	}
-	public HashMap<Integer, Integer> getNumPerProductType() {
-		return numPerProductType;
-	}
-	public void setNumPerProductType(HashMap<Integer, Integer> numPerProductType) {
-		this.numPerProductType = numPerProductType;
-	}
-	
+
+    public Cell getLocation() {
+        return location;
+    }
+
+    public void setLocation(Cell location) {
+        this.location = location;
+    }
+
 }

@@ -1,18 +1,18 @@
-package Delivery;
+package com.company;
 
 import java.util.HashMap;
 
 public class Order {
 
-	private Cell cell;
+	private Cell destination;
 	private int numOfItemsInOrder;
 	private HashMap<Integer, Integer> productTypeInOrder;  
 	
-	public Cell getCell() {
-		return cell;
+	public Cell getDestination() {
+		return destination;
 	}
-	public void setCell(Cell cell) {
-		this.cell = cell;
+	public void setDestination(Cell destination) {
+		this.destination = destination;
 	}
 	public int getNumOfItemsInOrder() {
 		return numOfItemsInOrder;

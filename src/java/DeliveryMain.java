@@ -1,4 +1,4 @@
-package Delivery; 
+package com.company;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -18,7 +18,7 @@ public class DeliveryMain {
 	
 	public static ProductType[] productTypes;
 	
-	public static HashMap<Integer, Warehouse> wareHouses; 
+	public static HashMap<Cell, Warehouse> warehouses;
 
 	public static HashMap<Integer, Order> orders; 
 		
@@ -41,12 +41,12 @@ public class DeliveryMain {
 		}
 		System.out.println("numOfWarehouses = " + numOfWarehouses);
 		for (int i = 0; i < numOfWarehouses; i++) {
-			System.out.println("Warehouse[" + i + "] location: " + wareHouses.get(i).getCell().getR() + " , " +  wareHouses.get(i).getCell().getC());
+			System.out.println("Warehouse[" + i + "] location: " + warehouses.get(i).getLocation());
 		}
 		
 		System.out.println("numOfOrders = " + numOfOrders);
 		for (int i = 0; i < numOfOrders; i++) {
-			System.out.println("Order[" + i + "] location: " + orders.get(i).getCell().getR() + " , " +  orders.get(i).getCell().getC());
+			System.out.println("Order[" + i + "] location: " + orders.get(i).getDestination());
 		}
 	}	
 	
@@ -81,25 +81,25 @@ public class DeliveryMain {
 	    	
 	    	if (lineNo == 3) {
 	    		numOfWarehouses = Integer.valueOf(line);
-	    		wareHouses = new HashMap<Integer, Warehouse>();
+	    		warehouses = new HashMap<>();
 	    		lineOfOrders = 4 + 2 * numOfWarehouses;	   
 	    		
 	    	}
 	    		    	
 	    	while (lineNo >= 4 && lineNo < lineOfOrders) {
 	    		if (lineNo % 2 == 0) {	    			
-	    			wareHouses.put(wareHouseNo, new Warehouse());
 	    			String location[] = line.split(" ");
-	    			int r = Integer.valueOf(location[0]);
-	    			int c = Integer.valueOf(location[1]);
-	    			wareHouses.get(wareHouseNo).setCell(new Cell(r, c));
+					int r = Integer.valueOf(location[0]);
+					int c = Integer.valueOf(location[1]);
+					warehouses.put(wareHouseNo, new Warehouse());
+					warehouses.get(wareHouseNo).setCell(new Cell(r, c));
 	    		} else {
 	    			HashMap<Integer, Integer> warehouseProductTypes = new HashMap<Integer, Integer>(); 
 	    			String[] warehouseProductTypesStr = line.split(" ");
 	    			for (int j = 0; j < numOfProductTypes; j++) {
 	    				warehouseProductTypes.put(j, Integer.valueOf(warehouseProductTypesStr[j]));
 	    			}
-					wareHouses.get(wareHouseNo).setNumPerProductType(warehouseProductTypes);
+					warehouses.get(wareHouseNo).setNumPerProductType(warehouseProductTypes);
 	    			wareHouseNo ++;
 	    				    			
 	    		}
@@ -118,7 +118,7 @@ public class DeliveryMain {
 	    			String location[] = line.split(" ");
 	    			int r = Integer.valueOf(location[0]);
 	    			int c = Integer.valueOf(location[1]);
-	    			orders.get(orderNo).setCell(new Cell(r, c));
+	    			orders.get(orderNo).setDestination(new Cell(r, c));
 	    		} else if ((lineNo - lineOfOrders - 1) % 3 == 1) {
 	    			orders.get(orderNo).setNumOfItemsInOrder(Integer.valueOf(line));	    				    			
 	    		} else { 
