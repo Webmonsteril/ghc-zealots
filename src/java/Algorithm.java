@@ -78,7 +78,6 @@ public class Algorithm{
                 }
                 currentPayload += currentProduct.getWeight();
                 // Load Drone & remove products from orders in board.
-                MapUtils.incrementValue(cellProductsMapForTask, productWeightList.get(i).getType());
                 warehouseProductsMap.remove(currentProduct.getType()); //board.warehouses
                 closestCustomerProductsMap.remove(currentProduct.getType()); // board.cellOrderedProducts
                 MapUtils.decrementValue(board.productTypeOrders, currentProduct.getType());
