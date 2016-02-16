@@ -2,7 +2,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 public class DeliveryMain {
 
@@ -19,7 +19,11 @@ public class DeliveryMain {
 	
 	public static HashMap<Cell, Warehouse> warehouses;
 
-	public static HashMap<Integer, Order> orders; 
+	public static HashMap<Integer, Order> orders;
+
+	public static Set<Cell> customerLocations = new HashSet<Cell>();
+
+    public static HashMap<Cell, HashMap<Integer, Integer>> cellOrderedProducts = new HashMap<Cell,  HashMap<Integer, Integer>>();
 		
 	public static void main(String[] args) throws IOException {
 		
@@ -111,20 +115,30 @@ public class DeliveryMain {
 	    	}
 	    	
 	    	if (lineOfOrders > 0 && lineNo > lineOfOrders) {
-	    		if ((lineNo - lineOfOrders - 1)  % 3 == 0) {	    			
+                String location[] = line.split(" ");
+                int r = Integer.valueOf(location[0]);
+                int c = Integer.valueOf(location[1]);
+                Cell destination = new Cell(r, c);
+	    		if ((lineNo - lineOfOrders - 1)  % 3 == 0) { // First Order line
 	    			orders.put(orderNo, new Order());
-	    			String location[] = line.split(" ");
-	    			int r = Integer.valueOf(location[0]);
-	    			int c = Integer.valueOf(location[1]);
-	    			orders.get(orderNo).setDestination(new Cell(r, c));
-	    		} else if ((lineNo - lineOfOrders - 1) % 3 == 1) {
+                    customerLocations.add(destination);
+	    			orders.get(orderNo).setDestination(destination);
+	    		} else if ((lineNo - lineOfOrders - 1) % 3 == 1) { // 2nd Order line
 	    			orders.get(orderNo).setNumOfItemsInOrder(Integer.valueOf(line));	    				    			
-	    		} else { 
+	    		} else { // 3rd Order line
 	    			String[] orderProductTypesStr = line.split(" ");
 	    			HashMap<Integer, Integer> productTypeInOrder = new HashMap<Integer, Integer>();
+
+                    HashMap<Integer, Integer> orderedItems = new HashMap<Integer, Integer>();
+
 	    			for (int j = 0; j < orders.get(orderNo).getNumOfItemsInOrder(); j++) {
 	    				productTypeInOrder.put(j, Integer.valueOf(orderProductTypesStr[j]));
+                        MapUtils.incrementValue(orderedItems, j);
 	    			}
+                    cellOrderedProducts.put(destination, orderedItems);
+
+                    // TODO: Wrap put, treat all of the product types in another map.
+
 					orders.get(orderNo).setProductTypeInOrder(productTypeInOrder);	    							
 	    			orderNo++;
 	    		}	    		
