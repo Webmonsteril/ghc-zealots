@@ -9,32 +9,36 @@ public class Algorithm{
         commands = new StringBuilder("");
     }
 
-    public void solve(){
+    public void solve() {
         int numOfDrones = board.dronesTracking[0].length;
         int currentDrone;
         int time;
         boolean stop = false;
         Cell bestWarehouseLocation;
 
-        for (time = 0; !stop && time < board.totalTurns; time++){
-            for (currentDrone = 0; currentDrone < numOfDrones ; currentDrone++){
-                if (!board.dronesTracking[time][currentDrone].isAvailable()){
+        for (time = 0; !stop && time < board.totalTurns; time++) {
+            for (currentDrone = 0; currentDrone < numOfDrones; currentDrone++) {
+                if (!board.dronesTracking[time][currentDrone].isAvailable()) {
                     continue;
                 }
                 bestWarehouseLocation = chooseBestWarehouseLocation(board.dronesTracking[time][currentDrone]);
-                if (bestWarehouseLocation == null){
+
+                if (bestWarehouseLocation == null) {
                     stop = true;
                     break;
                 }
                 // Drone is available.
                 HashMap<Integer, Integer> productsMap = board.warehouses.get(bestWarehouseLocation).getProductsMap();
-                for (Integer productType: productsMap.keySet()){
-                    int productsWeight = DeliveryMain.productWeights[productType] * productsMap.get(productType);
+                for (Integer productType : productsMap.keySet()) {
 
+                    int productsWeight = DeliveryMain.productWeights[productType] *
+                            productsMap.get(productType);
+
+
+                    do {
+
+                    } while (true);
                 }
-                do {
-
-                } while(true);
             }
         }
         
@@ -45,11 +49,10 @@ public class Algorithm{
 
     private HashMap<Cell, HashMap<Integer, Integer>> getDroneTask(Cell bestWarehouseLocation, Drone drone){
         int currentPayload = 0;
-        HashMap<Cell, HashMap<Integer, Integer>> droneTask = new HashMap<>();
+        HashMap<Cell, HashMap<Integer, Integer>> droneTask = new HashMap<Cell, HashMap<Integer, Integer>>();
 
         HashMap<Integer, Integer> warehouseProductsMap = board.warehouses.get(bestWarehouseLocation).getProductsMap();
         Set<Cell> customerLocations = DeliveryMain.customerLocations;
-        HashMap<Integer, Integer> cellProductsMapForTask = new HashMap<Integer, Integer>();
         HashMap<Integer, Integer> closestCustomerProductsMap;
         List<ProductWeight> productWeightList;
 
@@ -59,7 +62,9 @@ public class Algorithm{
             Set<Integer> closestCustomerProductTypes = closestCustomerProductsMap.keySet();
             productWeightList = new ArrayList<ProductWeight>();
 
-            closestCustomerProductTypes.forEach(productType -> productWeightList.add(new ProductWeight(productType, DeliveryMain.productWeights[productType])));
+            closestCustomerProductTypes.forEach(
+                    productType -> productWeightList.add(new ProductWeight(productType,
+                                                         DeliveryMain.productWeights[productType])));
 
             Collections.sort(productWeightList);
 
@@ -112,6 +117,7 @@ public class Algorithm{
             warehouses.remove(closestWarehouse);
 
         } while(!warehouseContainsWantedItems);
+
         return closestWarehouse;
     }
 
