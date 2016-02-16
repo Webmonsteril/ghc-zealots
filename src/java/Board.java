@@ -9,5 +9,5 @@ public class Board {
     public Drone[][] dronesTracking;
     public HashMap<Cell, Warehouse> warehouses;
     public HashMap<Cell,  HashMap<Integer, Integer>> cellOrderedProducts = new HashMap<Cell,  HashMap<Integer, Integer>>();
-    public HashMap<Integer, Integer> ProductTypeOrders;
+    public HashMap<Integer, Integer> productTypeOrders;
 }

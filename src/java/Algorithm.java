@@ -2,9 +2,11 @@ import java.util.*;
 
 public class Algorithm{
     private Board board;
+    private StringBuilder commands;
 
     public Algorithm(Board board){
         this.board = board;
+        commands = new StringBuilder("");
     }
 
     public void solve(){
@@ -37,11 +39,11 @@ public class Algorithm{
         }
         
         if (time < board.totalTurns){
-            finishExecutionWithRemainingTurns();
+            finishExecutionWithTurnsSurplus();
         }
     }
 
-    private HashMap<Cell, HashMap<Integer, Integer>> getDroneTask(Cell bestWarehouseLocation){
+    private HashMap<Cell, HashMap<Integer, Integer>> getDroneTask(Cell bestWarehouseLocation, Drone drone){
         int currentPayload = 0;
         HashMap<Cell, HashMap<Integer, Integer>> droneTask = new HashMap<>();
 
@@ -62,20 +64,33 @@ public class Algorithm{
             Collections.sort(productWeightList);
 
             for (int i = productWeightList.size() - 1; i >= 0; i--){
-                if (currentPayload + productWeightList.get(i).getWeight() > DeliveryMain.maxPayload){
+                ProductWeight currentProduct = productWeightList.get(i);
+
+                if (currentPayload +  currentProduct.getWeight() > DeliveryMain.maxPayload){
+                    // current product cannot be loaded (adding product would exceed drone payload).
+                    // TODO: make more efficient by trying again from the smallest product (or maybe knapsack)
                     continue;
                 }
+                currentPayload += currentProduct.getWeight();
                 // Load Drone & remove products from orders in board.
                 MapUtils.incrementValue(cellProductsMapForTask, productWeightList.get(i).getType());
+                warehouseProductsMap.remove(currentProduct.getType()); //board.warehouses
+                closestCustomerProductsMap.remove(currentProduct.getType()); // board.cellOrderedProducts
+                MapUtils.decrementValue(board.productTypeOrders, currentProduct.getType());
+                MapUtils.incrementValue(droneTask.get(closestCustomerLocation), currentProduct.getType());
+
+
+
                 //droneTask.put(closestCustomerLocation, )
             }
+            customerLocations.remove(closestCustomerLocation); // finished loading all products for closest customer.
 
-        } while(true);
-
-        //return droneTask;
+        } while(currentPayload + productWeightList.get(0).getWeight() <= DeliveryMain.maxPayload || !customerLocations.isEmpty());
+        //commands.append(DroneUtils.generateDeliveryCommand(drone, orderId, currentProduct.getType(), 1));
+        return droneTask;
     }
 
-    private void finishExecutionWithRemainingTurns() {
+    private void finishExecutionWithTurnsSurplus() {
         //TODO: wait with drones on remaining turns.
     }
 
