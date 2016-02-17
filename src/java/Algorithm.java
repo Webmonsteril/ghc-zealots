@@ -48,50 +48,57 @@ public class Algorithm{
     }
 
     private HashMap<Cell, HashMap<Integer, Integer>> getDroneTask(Cell bestWarehouseLocation, Drone drone){
-        int currentPayload = 0;
+        int dronePayload = 0;
         HashMap<Cell, HashMap<Integer, Integer>> droneTask = new HashMap<Cell, HashMap<Integer, Integer>>();
-
         HashMap<Integer, Integer> warehouseProductsMap = board.warehouses.get(bestWarehouseLocation).getProductsMap();
         Set<Cell> customerLocations = DeliveryMain.customerLocations;
         HashMap<Integer, Integer> closestCustomerProductsMap;
-        List<ProductWeight> productWeightList;
+        List<Integer> productsSortedIndicesByWeight = Arrays.asList(DeliveryMain.productWeights);
+        Set<Integer> closestCustomerProductTypes;
+        Cell closestCustomerLocation;
+        int currentWeight = 0;
 
         do {
-            Cell closestCustomerLocation = CellUtils.getCellWithMinDistance(bestWarehouseLocation, customerLocations);
+            closestCustomerLocation = CellUtils.getCellWithMinDistance(bestWarehouseLocation, customerLocations);
+
             closestCustomerProductsMap = board.cellOrderedProducts.get(closestCustomerLocation);
-            Set<Integer> closestCustomerProductTypes = closestCustomerProductsMap.keySet();
-            productWeightList = new ArrayList<ProductWeight>();
 
-            for (Integer productType : closestCustomerProductTypes){
-                productWeightList.add(new ProductWeight(productType,
-                        DeliveryMain.productWeights[productType]));
-            }
+            closestCustomerProductTypes = closestCustomerProductsMap.keySet();
 
-            Collections.sort(productWeightList);
+            sortProductTypesByWeights(productsSortedIndicesByWeight);
 
-            for (int i = productWeightList.size() - 1; i >= 0; i--){
-                ProductWeight currentProduct = productWeightList.get(i);
+            for (int productType = productsSortedIndicesByWeight.size()  - 1; productType >= 0; productType--){
+                // Note that the product type index is sorted by wight.
 
-                if (currentPayload +  currentProduct.getWeight() > DeliveryMain.maxPayload){
+                currentWeight = DeliveryMain.productWeights[productType];
+
+                if (dronePayload +  currentWeight > DeliveryMain.maxPayload){
                     // current product cannot be loaded (adding product would exceed drone payload).
                     // TODO: make more efficient by trying again from the smallest product (or maybe knapsack)
                     continue;
                 }
-                currentPayload += currentProduct.getWeight();
+                dronePayload += currentWeight;
                 // Load Drone & remove products from orders in board.
-                warehouseProductsMap.remove(currentProduct.getType()); //board.warehouses
-                closestCustomerProductsMap.remove(currentProduct.getType()); // board.cellOrderedProducts
-                MapUtils.decrementValue(board.productTypeOrders, currentProduct.getType());
-                MapUtils.incrementValue(droneTask.get(closestCustomerLocation), currentProduct.getType());
+                warehouseProductsMap.remove(productType); //board.warehouses
+                closestCustomerProductsMap.remove(productType); // board.cellOrderedProducts
+                MapUtils.decrementValue(board.productTypeOrders, productType);
+                MapUtils.incrementValue(droneTask.get(closestCustomerLocation), productType);
 
 
                 //droneTask.put(closestCustomerLocation, )
             }
             customerLocations.remove(closestCustomerLocation); // finished loading all products for closest customer.
 
-        } while(currentPayload + productWeightList.get(0).getWeight() <= DeliveryMain.maxPayload || !customerLocations.isEmpty());
+        } while(dronePayload + currentWeight <= DeliveryMain.maxPayload || !customerLocations.isEmpty());
         //commands.append(DroneUtils.generateDeliveryCommand(drone, orderId, currentProduct.getType(), 1));
         return droneTask;
+    }
+
+    private void sortProductTypesByWeights(List<Integer> productsSortedIndicesByWeight) {
+        productsSortedIndicesByWeight.stream().sorted(new Comparator<Integer>(){
+            public int compare(Integer productType1, Integer productType2){
+                return DeliveryMain.productWeights[productType1] - DeliveryMain.productWeights[productType2];
+            }});
     }
 
     private void finishExecutionWithTurnsSurplus() {
