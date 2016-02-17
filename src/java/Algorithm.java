@@ -29,10 +29,10 @@ public class Algorithm{
                 }
                 // Drone is available.
                 HashMap<Integer, Integer> productsMap = board.warehouses.get(bestWarehouseLocation).getProductsMap();
+
                 for (Integer productType : productsMap.keySet()) {
 
-                    int productsWeight = DeliveryMain.productWeights[productType] *
-                            productsMap.get(productType);
+                    int productsWeight = DeliveryMain.productWeights[productType] * productsMap.get(productType);
 
 
                     do {
@@ -62,9 +62,10 @@ public class Algorithm{
             Set<Integer> closestCustomerProductTypes = closestCustomerProductsMap.keySet();
             productWeightList = new ArrayList<ProductWeight>();
 
-            closestCustomerProductTypes.forEach(
-                    productType -> productWeightList.add(new ProductWeight(productType,
-                                                         DeliveryMain.productWeights[productType])));
+            for (Integer productType : closestCustomerProductTypes){
+                productWeightList.add(new ProductWeight(productType,
+                        DeliveryMain.productWeights[productType]));
+            }
 
             Collections.sort(productWeightList);
 
@@ -82,7 +83,6 @@ public class Algorithm{
                 closestCustomerProductsMap.remove(currentProduct.getType()); // board.cellOrderedProducts
                 MapUtils.decrementValue(board.productTypeOrders, currentProduct.getType());
                 MapUtils.incrementValue(droneTask.get(closestCustomerLocation), currentProduct.getType());
-
 
 
                 //droneTask.put(closestCustomerLocation, )
