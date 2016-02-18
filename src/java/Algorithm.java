@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Algorithm{
     private Board board;
@@ -53,7 +54,7 @@ public class Algorithm{
         HashMap<Integer, Integer> warehouseProductsMap = board.warehouses.get(bestWarehouseLocation).getProductsMap();
         Set<Cell> customerLocations = DeliveryMain.customerLocations;
         HashMap<Integer, Integer> closestCustomerProductsMap;
-        List<Integer> productsSortedIndicesByWeight = Arrays.asList(DeliveryMain.productWeights);
+        List<Integer> productsSortedIndicesByWeight;
         Set<Integer> closestCustomerProductTypes;
         Cell closestCustomerLocation;
         int currentWeight = 0;
@@ -65,7 +66,7 @@ public class Algorithm{
 
             closestCustomerProductTypes = closestCustomerProductsMap.keySet();
 
-            sortProductTypesByWeights(productsSortedIndicesByWeight);
+            productsSortedIndicesByWeight = getProductSortedIndicesByWeight(closestCustomerLocation);
 
             for (int productType = productsSortedIndicesByWeight.size()  - 1; productType >= 0; productType--){
                 // Note that the product type index is sorted by wight.
@@ -94,11 +95,12 @@ public class Algorithm{
         return droneTask;
     }
 
-    private void sortProductTypesByWeights(List<Integer> productsSortedIndicesByWeight) {
-        productsSortedIndicesByWeight.stream().sorted(new Comparator<Integer>(){
+    private List<Integer> getProductSortedIndicesByWeight(Cell closestCustomerLocation) {
+        return DeliveryMain.cellOrderedProducts.get(closestCustomerLocation).keySet()
+                .stream().sorted(new Comparator<Integer>(){
             public int compare(Integer productType1, Integer productType2){
                 return DeliveryMain.productWeights[productType1] - DeliveryMain.productWeights[productType2];
-            }});
+            }}).collect(Collectors.toList());
     }
 
     private void finishExecutionWithTurnsSurplus() {
